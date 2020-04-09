@@ -583,7 +583,7 @@ function git_push(
                 """
                 Host $host
                     StrictHostKeyChecking no
-                    User git
+                    User $username
                     HostName $host
                     IdentityFile "$keyfile"
                     IdentitiesOnly yes
