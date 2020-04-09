@@ -559,9 +559,16 @@ function git_push(
         host = match(r"(.*?)[:\/]", repo)[1]
 
         # For repo URL of the form user@host:/path/to/repo, extract user
-        user = '@' in repo ? split(repo, '@')[1] : "git"
-        # The upstream URL to which we push new content and the ssh decryption commands.
-        upstream = "$(user)@$(replace(repo, "$host/" => "$host:"))"
+        if '@' in repo
+            user = split(repo, '@')[1]
+            # The upstream URL to which we push new content and the ssh decryption commands.
+            upstream = "$(replace(repo, "$host/" => "$host:"))"
+        else
+            user = "git"
+            # The upstream URL to which we push new content and the ssh decryption commands.
+            upstream = "$(user)@$(replace(repo, "$host/" => "$host:"))"
+        end
+        
 
         keyfile = abspath(joinpath(root, ".documenter"))
         try
