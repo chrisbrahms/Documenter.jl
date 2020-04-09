@@ -414,7 +414,6 @@ function deploydocs(;
         forcepush::Bool = false,
         deploy_config = auto_detect_deploy_system(),
         push_preview::Bool = false,
-        username="git",
     )
 
     subfolder = deploy_folder(deploy_config; repo=repo, devbranch=devbranch, push_preview=push_preview, devurl=devurl)
@@ -456,7 +455,6 @@ function deploydocs(;
                     branch=branch, dirname=dirname, target=target,
                     sha=sha, deploy_config=deploy_config, subfolder=subfolder,
                     devurl=devurl, versions=versions, forcepush=forcepush,
-                    username=username
                 )
             end
         end
@@ -560,8 +558,10 @@ function git_push(
         # Extract host from repo as everything up to first ':' or '/' character
         host = match(r"(.*?)[:\/]", repo)[1]
 
+        # For repo URL of the form user@host:/path/to/repo, extract user
+        user = '@' in repo ? split(repo, '@')[1] : "git"
         # The upstream URL to which we push new content and the ssh decryption commands.
-        upstream = "$(username)@$(replace(repo, "$host/" => "$host:"))"
+        upstream = "$(user)@$(replace(repo, "$host/" => "$host:"))"
 
         keyfile = abspath(joinpath(root, ".documenter"))
         try
@@ -583,7 +583,7 @@ function git_push(
                 """
                 Host $host
                     StrictHostKeyChecking no
-                    User $username
+                    User $user
                     HostName $host
                     IdentityFile "$keyfile"
                     IdentitiesOnly yes
