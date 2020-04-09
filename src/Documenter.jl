@@ -555,18 +555,19 @@ function git_push(
     end
 
     if authentication_method(deploy_config) === SSH
-        # Extract host from repo as everything up to first ':' or '/' character
-        host = match(r"(.*?)[:\/]", repo)[1]
-
         # For repo URL of the form user@host:/path/to/repo, extract user
         if '@' in repo
-            user = split(repo, '@')[1]
+            user, rest = split(repo, '@')
+            # Extract host from repo as everything between @ and first ':' or '/' character
+            host = match(r"(.*?)[:\/]", rest)[1]
             # The upstream URL to which we push new content and the ssh decryption commands.
             upstream = "$(replace(repo, "$host/" => "$host:"))"
         else
             user = "git"
+            # Extract host from repo as everything up to first ':' or '/' character
+            host = match(r"(.*?)[:\/]", repo)[1]
             # The upstream URL to which we push new content and the ssh decryption commands.
-            upstream = "$(user)@$(replace(repo, "$host/" => "$host:"))"
+            upstream = "git@$(replace(repo, "$host/" => "$host:"))"
         end
         
 
