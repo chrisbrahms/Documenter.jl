@@ -573,7 +573,7 @@ function git_push(
 
         keyfile = abspath(joinpath(root, ".documenter"))
         try
-            write(keyfile, documenter_key(deploy_config))
+            write(keyfile, base64decode(documenter_key(deploy_config)))
         catch e
             @error """
             Documenter failed to decode the DOCUMENTER_KEY environment variable.
