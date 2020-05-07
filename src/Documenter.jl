@@ -603,7 +603,7 @@ function git_push(
             else
                 keycontent = documenter_key(deploy_config)
             end
-            write(keyfile, base64decode(keycontent))
+            write(keyfile, keycontent)
         catch e
             @error """
             Documenter failed to decode the DOCUMENTER_KEY environment variable.
